@@ -12,7 +12,7 @@ namespace Kebab.SceneFlow
             DontDestroyOnLoad(gameObject);
         }
 
-        private void OnEnable()
+        protected void OnEnable()
         {
             UpdateProgress(0f);
         }
