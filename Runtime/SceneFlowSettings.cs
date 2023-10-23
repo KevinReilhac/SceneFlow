@@ -11,6 +11,8 @@ namespace Kebab.SceneFlow.Settings
 
         public ALoadingScreen LoadingScreenPrefab;
         [Min(0)] public float FakeLoadingTime = 0f;
+        [Range(0f, 1f)] public float FakeLoadingPercent = 0.2f;
+        public bool ActionToExitLoadingScreen = false;
     }
 }
 

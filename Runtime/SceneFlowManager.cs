@@ -6,17 +6,22 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Threading.Tasks;
 using System.IO;
+using Kebab.SceneFlow.Utils;
+using System.Runtime.CompilerServices;
 
 namespace Kebab.SceneFlow
 {
     public static class SceneFlowManager
     {
+        private const int FAKE_LOADING_DELTA = 50;
         private static SceneFlowSettings _settings;
         private static ALoadingScreen _loadingScreen;
+        private static AsyncOperation loadAsyncOperation;
 
         public static bool IsLoadingScene { get; private set; } = false;
         public static event Action OnLoadScene;
         public static event Action OnSceneLoaded;
+
 
         private static SceneFlowSettings Settings
         {
@@ -52,15 +57,28 @@ namespace Kebab.SceneFlow
         /// </summary>
         /// <param name="scene"> Scene name </param>
         /// <param name="showLoadingScreen"> Display loading scene on True</param>
-        public static void Load(string scene, bool showLoadingScreen = true)
+        public static async void Load(string scene, bool showLoadingScreen = true)
         {
+            if (Settings == null) return;
+
             if (IsLoadingScene)
             {
                 Debug.LogError("You already loading a scene.");
                 return;
             }
 
-            Load(SceneManager.LoadSceneAsync(scene), showLoadingScreen);
+            OnLoadScene?.Invoke();
+            if (showLoadingScreen)
+            {
+                LoadingScreen.Show(async () =>
+                {
+                    await Load(SceneManager.LoadSceneAsync(scene), showLoadingScreen);
+                });
+            }
+            else
+            {
+                await Load(SceneManager.LoadSceneAsync(scene), showLoadingScreen);
+            }
         }
 
         /// <summary>
@@ -68,36 +86,71 @@ namespace Kebab.SceneFlow
         /// </summary>
         /// <param name="build index"> Scene name </param>
         /// <param name="showLoadingScreen"> Display loading scene on True</param>
-        public static void Load(int buildIndex, bool showLoadingScreen = true)
+        public static async void Load(int buildIndex, bool showLoadingScreen = true)
         {
+            if (Settings == null) return;
+
             if (IsLoadingScene)
             {
                 Debug.LogError("You already loading a scene.");
                 return;
             }
 
-            Load(SceneManager.LoadSceneAsync(buildIndex), showLoadingScreen);
+            OnLoadScene?.Invoke();
+            if (showLoadingScreen)
+            {
+                LoadingScreen.Show(async () =>
+                {
+                    await Load(SceneManager.LoadSceneAsync(buildIndex), showLoadingScreen);
+                });
+            }
+            else
+            {
+                await Load(SceneManager.LoadSceneAsync(buildIndex), showLoadingScreen);
+            }
         }
 
 
-        public static async void Load(AsyncOperation loadSceneOperation, bool showLoadingScreen = true)
+        private static async Task Load(AsyncOperation loadSceneOperation, bool showLoadingScreen = true)
         {
-            if (Settings == null) return;
-
-            OnLoadScene?.Invoke();
-
-            if (showLoadingScreen) LoadingScreen?.Show();
+            SceneFlowManager.loadAsyncOperation = loadSceneOperation;
+            loadSceneOperation.allowSceneActivation = false;
 
             LoadingScreen.UpdateProgress(0);
-            await Task.Delay(Mathf.RoundToInt(Settings.FakeLoadingTime * 1000f));
-            while (!loadSceneOperation.isDone)
+            while (loadSceneOperation.progress < 0.9f)
             {
-                LoadingScreen.UpdateProgress(loadSceneOperation.progress);
+                LoadingScreen.UpdateProgress(MathHelpers.Remap(loadSceneOperation.progress, 0f, 1f, 0f, 1f - Settings.FakeLoadingPercent));
                 await Task.Yield();
             }
 
+            await ProcessFakeLoadingTime();
+            LoadingScreen.UpdateProgress(1f);
+            if (!Settings.ActionToExitLoadingScreen)
+                ExitLoadingScreen();
+        }
+
+        public static void ExitLoadingScreen()
+        {
+            if (loadAsyncOperation.progress < 0.9f)
+            {
+                Debug.Log("Loading is not finished.");
+                return;
+            }
+
+            loadAsyncOperation.allowSceneActivation = true;
             LoadingScreen.Hide();
             OnSceneLoaded?.Invoke();
+        }
+
+        private static async Task ProcessFakeLoadingTime()
+        {
+            for (float t = 0; t < Settings.FakeLoadingTime * 1000; t++)
+            {
+                await Task.Delay(FAKE_LOADING_DELTA);
+                t += FAKE_LOADING_DELTA;
+                float progress = MathHelpers.Remap(t / (Settings.FakeLoadingTime * 1000f), 0f, 1f, 1f - Settings.FakeLoadingPercent, 1f);
+                LoadingScreen.UpdateProgress(progress);
+            }
         }
 
         public static void LoadNextScene(bool showLoadingScreen = true)
