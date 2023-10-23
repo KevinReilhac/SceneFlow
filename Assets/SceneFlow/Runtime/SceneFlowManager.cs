@@ -46,6 +46,7 @@ namespace Kebab.SceneFlow
                     if (Settings == null)
                         return null;
                     _loadingScreen = GameObject.Instantiate(Settings.LoadingScreenPrefab);
+                    _loadingScreen.gameObject.SetActive(false);
                 }
 
                 return _loadingScreen;
