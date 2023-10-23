@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Kebab.SceneFlow;
+using System;
 
 public class LoadingScreen : ALoadingScreen
 {
@@ -13,13 +14,21 @@ public class LoadingScreen : ALoadingScreen
         gameObject.SetActive(false);
     }
 
-    public override void Show()
+    public override void Show(Action onVisible)
     {
         gameObject.SetActive(true);
+
+        onVisible.Invoke();
     }
 
     public override void UpdateProgress(float progress)
     {
         fill.fillAmount = progress;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+            SceneFlowManager.ExitLoadingScreen();
     }
 }
