@@ -120,8 +120,8 @@ namespace Kebab.SceneFlow
             LoadingScreen.UpdateProgress(0);
             while (loadSceneOperation.progress < 0.9f)
             {
-                LoadingScreen.UpdateProgress(MathHelpers.Remap(loadSceneOperation.progress, 0f, 0.9f, 0f, 1f - Settings.FakeLoadingPercent));
                 await Task.Yield();
+                LoadingScreen.UpdateProgress(MathHelpers.Remap(loadSceneOperation.progress, 0f, 0.9f, 0f, 1f - Settings.FakeLoadingPercent));
             }
 
             await ProcessFakeLoadingTime();

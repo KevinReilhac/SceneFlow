@@ -7,7 +7,7 @@ namespace Kebab.SceneFlow
 {
     public abstract class ALoadingScreen : MonoBehaviour
     {
-        protected void Awake()
+        protected virtual void Awake()
         {
             DontDestroyOnLoad(gameObject);
         }
