@@ -12,6 +12,11 @@ namespace Kebab.SceneFlow
             DontDestroyOnLoad(gameObject);
         }
 
+        void private void OnEnable()
+        {
+            UpdateProgress(0f);
+        }
+
         public abstract void Show(Action onVisible);
         public abstract void Hide();
         public virtual void OnScenePreloaded() {}
