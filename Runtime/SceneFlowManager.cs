@@ -31,7 +31,10 @@ namespace Kebab.SceneFlow
                 {
                     _settings = Resources.Load<SceneFlowSettings>(Path.Join(SceneFlowSettings.SETTINGS_DIRECTORY, SceneFlowSettings.SETTINGS_FILENAME));
                     if (_settings == null)
-                        Debug.LogError("Create A SceneFlowSettings in Ressources folder.");
+                    {
+                        Debug.LogError("SceneFlowSettings Asset not found in Ressources folder.");
+                        return null;
+                    }
                 }
                 return _settings;
             }
