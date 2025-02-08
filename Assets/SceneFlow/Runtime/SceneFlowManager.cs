@@ -23,7 +23,7 @@ namespace Kebab.SceneFlow
         public static event Action OnSceneLoaded;
 
         private static SceneFlowSettings _settings;
-        private static SceneFlowSettings Settings
+        public static SceneFlowSettings Settings
         {
             get
             {
@@ -46,7 +46,7 @@ namespace Kebab.SceneFlow
             {
                 if (_loadingScreen == null)
                 {
-                    if (Settings == null)
+                    if (Settings == null || Settings.LoadingScreenPrefab == null)
                         return null;
                     _loadingScreen = GameObject.Instantiate(Settings.LoadingScreenPrefab);
                     _loadingScreen.gameObject.SetActive(false);
@@ -89,12 +89,15 @@ namespace Kebab.SceneFlow
         public static async void Load(int buildIndex, bool showLoadingScreen = true)
         {
             if (Settings == null) return;
-
             if (IsLoadingScene)
             {
                 Debug.LogError("You already loading a scene.");
                 return;
             }
+
+            if (showLoadingScreen && LoadingScreen == null)
+                Debug.LogError("LoadingScreenPrefab is not set in SceneFlowSettings.\nScene gonna be loaded without loading screen anyway.");
+
 
             if (buildIndex <= -1)
             {
@@ -105,10 +108,8 @@ namespace Kebab.SceneFlow
             OnLoadScene?.Invoke();
             if (showLoadingScreen)
             {
-                LoadingScreen.Show(async () =>
-                {
-                    await Load(SceneManager.LoadSceneAsync(buildIndex));
-                });
+                LoadingScreen?.Show();
+                await Load(SceneManager.LoadSceneAsync(buildIndex));
             }
             else
             {
@@ -129,15 +130,26 @@ namespace Kebab.SceneFlow
 
             IsLoadingScene = false;
             loadAsyncOperation.allowSceneActivation = true;
-            LoadingScreen.Hide();
-            OnSceneLoaded?.Invoke();
+            LoadingScreen?.StartCoroutine(HideLoadingScreenOnNextFrame());
         }
+
+
+        private static IEnumerator HideLoadingScreenOnNextFrame()
+        {
+            yield return new WaitForEndOfFrame();
+            if (LoadingScreen != null && LoadingScreen.IsVisible)
+                LoadingScreen.Hide();
+            OnSceneLoaded?.Invoke();
+
+        }
+
 
         /// <summary>
         /// Load the next scene in the build settings.
         /// </summary>
         /// <param name="showLoadingScreen"> Display loading scene on True</param>
         public static void LoadNextScene(bool showLoadingScreen = true)
+
         {
             int currentBuildIndex = SceneManager.GetActiveScene().buildIndex;
 
@@ -156,15 +168,17 @@ namespace Kebab.SceneFlow
             SceneFlowManager.loadAsyncOperation = loadSceneOperation;
             loadSceneOperation.allowSceneActivation = false;
 
-            LoadingScreen.UpdateProgress(0);
+            LoadingScreen?.UpdateProgress(0);
             while (loadSceneOperation.progress < 0.9f)
             {
                 await Task.Yield();
-                LoadingScreen.UpdateProgress(MathHelpers.Remap(loadSceneOperation.progress, 0f, 0.9f, 0f, 1f - Settings.FakeLoadingPercent));
+                LoadingScreen?.UpdateProgress(MathHelpers.Remap(loadSceneOperation.progress, 0f, 0.9f, 0f, 1f - Settings.FakeLoadingPercent));
             }
 
+
             await ProcessFakeLoadingTime();
-            LoadingScreen.UpdateProgress(1f);
+            LoadingScreen?.UpdateProgress(1f);
+
 
             if (!Settings.ActionToExitLoadingScreen)
                 ExitLoadingScreen();
@@ -185,9 +199,10 @@ namespace Kebab.SceneFlow
                 await Task.Delay(FAKE_LOADING_DELTA);
                 t += FAKE_LOADING_DELTA;
                 float progress = MathHelpers.Remap(t / (Settings.FakeLoadingTime * 1000f), 0f, 1f, 1f - Settings.FakeLoadingPercent, 1f);
-                LoadingScreen.UpdateProgress(progress);
+                LoadingScreen?.UpdateProgress(progress);
             }
         }
+
 
         private static void CreateExitActionAwaiter(Action action)
         {

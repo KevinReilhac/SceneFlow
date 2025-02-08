@@ -14,11 +14,9 @@ public class LoadingScreen : ALoadingScreen
         gameObject.SetActive(false);
     }
 
-    public override void Show(Action onVisible)
+    public override void Show()
     {
         gameObject.SetActive(true);
-
-        onVisible.Invoke();
     }
 
     public override void UpdateProgress(float progress)

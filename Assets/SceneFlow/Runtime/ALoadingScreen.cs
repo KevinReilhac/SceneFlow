@@ -17,10 +17,12 @@ namespace Kebab.SceneFlow
             UpdateProgress(0f);
         }
 
-        public abstract void Show(Action onVisible);
+        public abstract void Show();
         public abstract void Hide();
+        public virtual bool IsVisible => gameObject.activeSelf;
         public virtual void OnScenePreloaded() {}
         public virtual void UpdateProgress(float progress) {}
+
 
         private void OnApplicationQuit()
         {
