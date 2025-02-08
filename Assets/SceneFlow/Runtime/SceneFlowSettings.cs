@@ -20,7 +20,7 @@ namespace Kebab.SceneFlow.Settings
 
 
         [Flags]
-        public enum EKeyboardMouseAction
+        public enum EKeyboardAction
         {
             Space = 1 << 0,
             Enter = 1 << 1,
@@ -63,7 +63,7 @@ namespace Kebab.SceneFlow.Settings
         public bool ActionToExitLoadingScreen = false;
 
         [Tooltip("The action to exit the loading screen using the keyboard.")]
-        public EKeyboardMouseAction ExitLoadingKeyboardMouseAction = (EKeyboardMouseAction)(-1);
+        public EKeyboardAction ExitLoadingKeyboardAction = (EKeyboardAction)(-1);
 
         [Tooltip("The action to exit the loading screen using the gamepad.")]
         public EGamepadAction ExitLoadingGamepadAction = (EGamepadAction)(-1);

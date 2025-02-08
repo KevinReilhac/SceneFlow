@@ -17,11 +17,11 @@ namespace Kebab.SceneFlow
         private static SceneFlowSettings _settings;
         private static ALoadingScreen _loadingScreen;
         private static AsyncOperation loadAsyncOperation;
+        private static ExitActionAwaiter exitActionAwaiter;
 
         public static bool IsLoadingScene { get; private set; } = false;
         public static event Action OnLoadScene;
         public static event Action OnSceneLoaded;
-
 
         private static SceneFlowSettings Settings
         {
@@ -61,28 +61,12 @@ namespace Kebab.SceneFlow
         /// </summary>
         /// <param name="scene"> Scene name </param>
         /// <param name="showLoadingScreen"> Display loading scene on True</param>
-        public static async void Load(string scene, bool showLoadingScreen = true)
+        public static void Load(string scene, bool showLoadingScreen = true)
         {
             if (Settings == null) return;
+            int buildIndex = SceneManager.GetSceneByName(scene).buildIndex;
 
-            if (IsLoadingScene)
-            {
-                Debug.LogError("You already loading a scene.");
-                return;
-            }
-
-            OnLoadScene?.Invoke();
-            if (showLoadingScreen)
-            {
-                LoadingScreen.Show(async () =>
-                {
-                    await Load(SceneManager.LoadSceneAsync(scene), showLoadingScreen);
-                });
-            }
-            else
-            {
-                await Load(SceneManager.LoadSceneAsync(scene), showLoadingScreen);
-            }
+            Load(buildIndex, showLoadingScreen);
         }
 
         /// <summary>
@@ -97,6 +81,12 @@ namespace Kebab.SceneFlow
             if (IsLoadingScene)
             {
                 Debug.LogError("You already loading a scene.");
+                return;
+            }
+
+            if (buildIndex <= -1)
+            {
+                Debug.LogError("Invalid build index.");
                 return;
             }
 
@@ -117,6 +107,7 @@ namespace Kebab.SceneFlow
 
         private static async Task Load(AsyncOperation loadSceneOperation, bool showLoadingScreen = true)
         {
+            IsLoadingScene = true;
             SceneFlowManager.loadAsyncOperation = loadSceneOperation;
             loadSceneOperation.allowSceneActivation = false;
 
@@ -130,7 +121,19 @@ namespace Kebab.SceneFlow
             await ProcessFakeLoadingTime();
             LoadingScreen.UpdateProgress(1f);
             if (!Settings.ActionToExitLoadingScreen)
+            {
                 ExitLoadingScreen();
+            }
+            else
+            {
+                CreateExitActionAwaiter(OnPressExitAction);
+            }
+        }
+
+        private static void OnPressExitAction()
+        {
+            RemoveExitActionAwaiter();
+            ExitLoadingScreen();
         }
 
         public static void ExitLoadingScreen()
@@ -141,6 +144,7 @@ namespace Kebab.SceneFlow
                 return;
             }
 
+            IsLoadingScene = false;
             loadAsyncOperation.allowSceneActivation = true;
             LoadingScreen.Hide();
             OnSceneLoaded?.Invoke();
@@ -170,11 +174,24 @@ namespace Kebab.SceneFlow
             Load(currentBuildIndex + 1, showLoadingScreen);
         }
 
-        private static bool CheckExitInput()
+        private static void CreateExitActionAwaiter(Action action)
         {
-            if (!Settings.ActionToExitLoadingScreen)
-                return false;
-            return false;
+            if (exitActionAwaiter != null)
+                return;
+
+            GameObject exitActionAwaiterGameObject = new GameObject("ExitActionAwaiter", typeof(ExitActionAwaiter));
+            exitActionAwaiter = exitActionAwaiterGameObject.GetComponent<ExitActionAwaiter>();
+            exitActionAwaiter.Setup(action, Settings.ExitLoadingKeyboardAction, Settings.ExitLoadingGamepadAction, Settings.ExitLoadingMouseAction);
+        }
+
+        private static void RemoveExitActionAwaiter()
+        {
+            if (exitActionAwaiter != null)
+            {
+                GameObject.Destroy(exitActionAwaiter.gameObject);
+                exitActionAwaiter = null;
+            }
+
         }
     }
 }

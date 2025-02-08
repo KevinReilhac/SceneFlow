@@ -25,10 +25,4 @@ public class LoadingScreen : ALoadingScreen
     {
         fill.fillAmount = progress;
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-            SceneFlowManager.ExitLoadingScreen();
-    }
 }
