@@ -23,7 +23,6 @@ namespace Kebab.SceneFlow
         public virtual void OnScenePreloaded() {}
         public virtual void UpdateProgress(float progress) {}
 
-
         private void OnApplicationQuit()
         {
             DestroyImmediate(gameObject);

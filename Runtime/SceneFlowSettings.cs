@@ -66,7 +66,12 @@ namespace Kebab.SceneFlow.Settings
         public EMouseAction ExitLoadingMouseAction = (EMouseAction)(-1);
 
 #if UNITY_EDITOR
+        /// <summary>
+        /// /// Get the settings asset or create it if it doesn't exist.
+        /// </summary>
+        /// <returns>The settings asset.</returns>
         public static SceneFlowSettings GetOrCreate()
+
         {
             SceneFlowSettings settings = Resources.Load<SceneFlowSettings>($"{SETTINGS_DIRECTORY}/{SETTINGS_FILENAME}");
 

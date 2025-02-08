@@ -9,7 +9,9 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 #endif
 
-
+/// <summary>
+/// Check if the exit action is pressed.
+/// </summary>
 public static class ExitActionChecker
 {
     #if NEW_INPUT_SYSTEM && ENABLE_INPUT_SYSTEM
