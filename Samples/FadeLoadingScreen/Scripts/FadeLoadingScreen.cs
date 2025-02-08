@@ -64,12 +64,7 @@ namespace Kebab.SceneFlow.Samples.FadeLoadingScreen
 
             // Show press button to continue
             if (SceneFlowManager.Settings.ActionToExitLoadingScreen && progress >= 1f)
-            {
                 events.onWaitingForContinue?.Invoke();
-                Debug.Log("onWaitingForContinue");
-            }
-
-
         }
 
 
