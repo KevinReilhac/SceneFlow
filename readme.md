@@ -13,6 +13,9 @@ Easy way to implement a loading screen.
 
 Install SceneFlow with Unity Package Manager
 
+![pkgmngr](https://github.com/user-attachments/assets/7165bb65-8738-4d3c-9c2a-fb31acae2e56)
+
+
 ```bash
   https://github.com/KevinReilhac/SceneFlow.git#upm
 ```
