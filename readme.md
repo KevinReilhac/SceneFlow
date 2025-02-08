@@ -72,7 +72,7 @@ Load a scene when an external UnityEvent call LoadScene method.
 ![image](https://github.com/user-attachments/assets/18267907-b22d-41de-9bfb-5b114da7e6e3)
 __________
 ### LoadNextSceneOnEvent
-Load the next scene when an event is triggered.
+Load a scene when an external UnityEvent call LoadScene method.
 
 ![image](https://github.com/user-attachments/assets/c61a6629-a822-46d9-aea4-dc48f35571bf)
 ## Documentation
