@@ -21,12 +21,12 @@
       {
         "displayName": "Fade Loading screen",
         "description": "This is a template for a fade loading screen prefab",
-        "path": "Samples/SceneFlow/FadeLoadingScreen"
+        "path": "Samples~/SceneFlow/FadeLoadingScreen"
       },
       {
         "displayName": "Simple Loading screen",
         "description": "This is a template for a simple loading screen prefab",
-        "path": "Samples/SceneFlow/SimpleLoadingScreen"
+        "path": "Samples~/SceneFlow/SimpleLoadingScreen"
       }
     ]
 }
