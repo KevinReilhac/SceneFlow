@@ -39,7 +39,7 @@ namespace Kebab.SceneFlow.Settings.Editors
             exitLoadingMouseAction = serializedObject.FindProperty(nameof(SceneFlowSettings.ExitLoadingMouseAction));
 
             actionToExitLoadingScreen = serializedObject.FindProperty(nameof(SceneFlowSettings.ActionToExitLoadingScreen));
-            exitLoadingKeyboardMouseAction = serializedObject.FindProperty(nameof(SceneFlowSettings.ExitLoadingKeyboardMouseAction));
+            exitLoadingKeyboardMouseAction = serializedObject.FindProperty(nameof(SceneFlowSettings.ExitLoadingKeyboardAction));
             exitLoadingGamepadAction = serializedObject.FindProperty(nameof(SceneFlowSettings.ExitLoadingGamepadAction));
         }
 
@@ -74,11 +74,11 @@ namespace Kebab.SceneFlow.Settings.Editors
             EditorGUILayout.PropertyField(actionToExitLoadingScreen);
             if (actionToExitLoadingScreen.boolValue)
             {
-                SceneFlowSettings.EKeyboardMouseAction exitLoadingKeyboardMouseActionValue = (SceneFlowSettings.EKeyboardMouseAction)exitLoadingKeyboardMouseAction.enumValueFlag;
+                SceneFlowSettings.EKeyboardAction exitLoadingKeyboardMouseActionValue = (SceneFlowSettings.EKeyboardAction)exitLoadingKeyboardMouseAction.enumValueFlag;
                 SceneFlowSettings.EGamepadAction exitLoadingGamepadActionValue = (SceneFlowSettings.EGamepadAction)exitLoadingGamepadAction.enumValueFlag;
                 SceneFlowSettings.EMouseAction exitLoadingMouseActionValue = (SceneFlowSettings.EMouseAction)exitLoadingMouseAction.enumValueFlag;
 
-                SceneFlowSettings.EKeyboardMouseAction newExitLoadingKeyboardMouseActionValue = (SceneFlowSettings.EKeyboardMouseAction)EditorGUILayout.EnumFlagsField(exitLoadingKeyboardMouseActionContent, exitLoadingKeyboardMouseActionValue);
+                SceneFlowSettings.EKeyboardAction newExitLoadingKeyboardMouseActionValue = (SceneFlowSettings.EKeyboardAction)EditorGUILayout.EnumFlagsField(exitLoadingKeyboardMouseActionContent, exitLoadingKeyboardMouseActionValue);
                 SceneFlowSettings.EGamepadAction newExitLoadingGamepadActionValue = (SceneFlowSettings.EGamepadAction)EditorGUILayout.EnumFlagsField(exitLoadingGamepadActionContent, exitLoadingGamepadActionValue);
                 SceneFlowSettings.EMouseAction newExitLoadingMouseActionValue = (SceneFlowSettings.EMouseAction)EditorGUILayout.EnumFlagsField(exitLoadingMouseActionContent, exitLoadingMouseActionValue);
 

@@ -1,10 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Kebab.SceneFlow.Settings;
-using UnityEngine;
+
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+#elif ENABLE_LEGACY_INPUT_MANAGER
+using UnityEngine.InputManager;
+#endif
+
 
 public static class ExitActionChecker
 {
@@ -23,14 +27,14 @@ public static class ExitActionChecker
         };
     }
 
-    private static ButtonControl GetKeyControl(Keyboard keyboard, SceneFlowSettings.EKeyboardMouseAction keyboardAction)
+    private static ButtonControl GetKeyControl(Keyboard keyboard, SceneFlowSettings.EKeyboardAction keyboardAction)
     {
         return keyboardAction switch
         {
 
-            SceneFlowSettings.EKeyboardMouseAction.Space => keyboard.spaceKey,
-            SceneFlowSettings.EKeyboardMouseAction.Enter => keyboard.enterKey,
-            SceneFlowSettings.EKeyboardMouseAction.Escape => keyboard.escapeKey,
+            SceneFlowSettings.EKeyboardAction.Space => keyboard.spaceKey,
+            SceneFlowSettings.EKeyboardAction.Enter => keyboard.enterKey,
+            SceneFlowSettings.EKeyboardAction.Escape => keyboard.escapeKey,
             _ => throw new ArgumentException($"Unsupported keyboard action: {keyboardAction}", nameof(keyboardAction))
         };
     }
@@ -70,9 +74,9 @@ public static class ExitActionChecker
     };
     #endif
 
-    public static bool CheckExitInput(SceneFlowSettings.EKeyboardMouseAction keyboardActionFlags, SceneFlowSettings.EGamepadAction gamepadActionFlags, SceneFlowSettings.EMouseAction mouseActionFlags)
+    public static bool CheckExitInput(SceneFlowSettings.EKeyboardAction keyboardActionFlags, SceneFlowSettings.EGamepadAction gamepadActionFlags, SceneFlowSettings.EMouseAction mouseActionFlags)
     {
-        SceneFlowSettings.EKeyboardMouseAction[] keyboardActionArray = GetEnumArray(keyboardActionFlags);
+        SceneFlowSettings.EKeyboardAction[] keyboardActionArray = GetEnumArray(keyboardActionFlags);
         SceneFlowSettings.EGamepadAction[] gamepadActionArray = GetEnumArray(gamepadActionFlags);
         SceneFlowSettings.EMouseAction[] mouseActionArray = GetEnumArray(mouseActionFlags);
 
@@ -89,7 +93,7 @@ public static class ExitActionChecker
 
         if (Keyboard.current != null)
         {
-            foreach (SceneFlowSettings.EKeyboardMouseAction keyboardAction in keyboardActionArray)
+            foreach (SceneFlowSettings.EKeyboardAction keyboardAction in keyboardActionArray)
             {
                 ButtonControl buttonControl = GetKeyControl(Keyboard.current, keyboardAction);
                 if (buttonControl != null && buttonControl.wasPressedThisFrame) return true;
