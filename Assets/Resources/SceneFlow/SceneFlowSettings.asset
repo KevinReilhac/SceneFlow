@@ -15,7 +15,7 @@ MonoBehaviour:
   LoadingScreenPrefab: {fileID: 1525707075784793257, guid: ae06418aad821b34ca02d0b139db6e56, type: 3}
   FakeLoadingTime: 1
   FakeLoadingPercent: 0.118
-  ActionToExitLoadingScreen: 0
+  ActionToExitLoadingScreen: 1
   ExitLoadingKeyboardAction: -1
   ExitLoadingGamepadAction: -1
   ExitLoadingMouseAction: -1

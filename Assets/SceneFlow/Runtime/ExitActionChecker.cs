@@ -1,12 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Kebab.SceneFlow.Settings;
+using UnityEngine;
 
 #if NEW_INPUT_SYSTEM && ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
-#elif ENABLE_LEGACY_INPUT_MANAGER
-using UnityEngine.InputManager;
 #endif
 
 
@@ -51,14 +51,15 @@ public static class ExitActionChecker
 
 
     #elif ENABLE_LEGACY_INPUT_MANAGER
-    private static readonly Dictionary<SceneFlowSettings.EKeyboardMouseAction, KeyCode> KEYCODE_FROM_KEYBOARD_ACTION = new Dictionary<SceneFlowSettings.EKeyboardMouseAction, KeyCode>
+    private static readonly Dictionary<SceneFlowSettings.EKeyboardAction, KeyCode> KEYCODE_FROM_KEYBOARD_ACTION = new()
     {
-        { SceneFlowSettings.EKeyboardMouseAction.Space, KeyCode.Space },
-        { SceneFlowSettings.EKeyboardMouseAction.Enter, KeyCode.Return },
-        { SceneFlowSettings.EKeyboardMouseAction.Escape, KeyCode.Escape },
+        { SceneFlowSettings.EKeyboardAction.Space, KeyCode.Space },
+        { SceneFlowSettings.EKeyboardAction.Enter, KeyCode.Return },
+        { SceneFlowSettings.EKeyboardAction.Escape, KeyCode.Escape },
     };
 
-    private static readonly  Dictionary<SceneFlowSettings.EGamepadAction, KeyCode> KEYCODE_FROM_GAMEPAD_ACTION = new Dictionary<SceneFlowSettings.EGamepadAction, KeyCode>
+
+    private static readonly  Dictionary<SceneFlowSettings.EGamepadAction, KeyCode> KEYCODE_FROM_GAMEPAD_ACTION = new()
     {
         { SceneFlowSettings.EGamepadAction.A, KeyCode.JoystickButton0 },
         { SceneFlowSettings.EGamepadAction.B, KeyCode.JoystickButton1 },
@@ -67,7 +68,7 @@ public static class ExitActionChecker
         { SceneFlowSettings.EGamepadAction.Start, KeyCode.JoystickButton7 },
     };
 
-    private static readonly  Dictionary<SceneFlowSettings.EMouseAction, KeyCode> KEYCODE_FROM_MOUSE_ACTION = new Dictionary<SceneFlowSettings.EMouseAction, KeyCode>
+    private static readonly  Dictionary<SceneFlowSettings.EMouseAction, KeyCode> KEYCODE_FROM_MOUSE_ACTION = new()
     {
         { SceneFlowSettings.EMouseAction.LeftClick, KeyCode.Mouse0 },
         { SceneFlowSettings.EMouseAction.RightClick, KeyCode.Mouse1 },
@@ -80,7 +81,7 @@ public static class ExitActionChecker
         SceneFlowSettings.EGamepadAction[] gamepadActionArray = GetEnumArray(gamepadActionFlags);
         SceneFlowSettings.EMouseAction[] mouseActionArray = GetEnumArray(mouseActionFlags);
 
-        #if ENABLE_INPUT_SYSTEM
+        #if NEW_INPUT_SYSTEM && ENABLE_INPUT_SYSTEM
 
         if (Gamepad.current != null)
         {
@@ -115,11 +116,12 @@ public static class ExitActionChecker
         KeyCode keyCode = KeyCode.None;
 
         // Check keyboard actions
-        foreach (SceneFlowSettings.EKeyboardMouseAction keyboardAction in keyboardActionArray)
+        foreach (SceneFlowSettings.EKeyboardAction keyboardAction in keyboardActionArray)
         {
             if (KEYCODE_FROM_KEYBOARD_ACTION.TryGetValue(keyboardAction, out keyCode))
                 if (Input.GetKeyDown(keyCode)) return true;
         }
+
 
         // Check gamepad actions
         foreach (SceneFlowSettings.EGamepadAction gamepadAction in gamepadActionArray)
