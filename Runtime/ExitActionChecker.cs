@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Kebab.SceneFlow.Settings;
 
-#if ENABLE_INPUT_SYSTEM
+#if NEW_INPUT_SYSTEM && ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 #elif ENABLE_LEGACY_INPUT_MANAGER
@@ -12,7 +12,7 @@ using UnityEngine.InputManager;
 
 public static class ExitActionChecker
 {
-    #if ENABLE_INPUT_SYSTEM
+    #if NEW_INPUT_SYSTEM && ENABLE_INPUT_SYSTEM
 
     private static ButtonControl GetButtonControl(Gamepad gamepad, SceneFlowSettings.EGamepadAction gamepadAction)
     {

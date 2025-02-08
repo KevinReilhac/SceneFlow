@@ -59,15 +59,28 @@ namespace Kebab.SceneFlow
         /// <summary>
         /// Load a scene asyncronously
         /// </summary>
-        /// <param name="scene"> Scene name </param>
+        /// <param name="sceneName"> Scene name </param>
         /// <param name="showLoadingScreen"> Display loading scene on True</param>
-        public static void Load(string scene, bool showLoadingScreen = true)
+        public static void Load(string sceneName, bool showLoadingScreen = true)
         {
             if (Settings == null) return;
-            int buildIndex = SceneManager.GetSceneByName(scene).buildIndex;
+            if (!sceneName.EndsWith(".unity"))
+                sceneName += ".unity";
 
-            Load(buildIndex, showLoadingScreen);
+            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+
+            {
+                string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+                if (scenePath.EndsWith(sceneName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Load(i, showLoadingScreen);
+                    return;
+                }
+            }
+
+            Debug.LogError($"Scene {sceneName} not found in build settings.");
         }
+
 
         /// <summary>
         /// Load a scene asyncronously
@@ -95,17 +108,18 @@ namespace Kebab.SceneFlow
             {
                 LoadingScreen.Show(async () =>
                 {
-                    await Load(SceneManager.LoadSceneAsync(buildIndex), showLoadingScreen);
+                    await Load(SceneManager.LoadSceneAsync(buildIndex));
                 });
             }
             else
             {
-                await Load(SceneManager.LoadSceneAsync(buildIndex), showLoadingScreen);
+                await Load(SceneManager.LoadSceneAsync(buildIndex));
             }
+
         }
 
 
-        private static async Task Load(AsyncOperation loadSceneOperation, bool showLoadingScreen = true)
+        private static async Task Load(AsyncOperation loadSceneOperation)
         {
             IsLoadingScene = true;
             SceneFlowManager.loadAsyncOperation = loadSceneOperation;
@@ -120,14 +134,11 @@ namespace Kebab.SceneFlow
 
             await ProcessFakeLoadingTime();
             LoadingScreen.UpdateProgress(1f);
+
             if (!Settings.ActionToExitLoadingScreen)
-            {
                 ExitLoadingScreen();
-            }
             else
-            {
                 CreateExitActionAwaiter(OnPressExitAction);
-            }
         }
 
         private static void OnPressExitAction()
