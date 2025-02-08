@@ -18,11 +18,12 @@ namespace Kebab.SceneFlow.Settings.Editors
         private SerializedProperty actionToExitLoadingScreen;
         private SerializedProperty exitLoadingKeyboardMouseAction;
         private SerializedProperty exitLoadingGamepadAction;
+        private SerializedProperty exitLoadingMouseAction;
 
         private GUIContent fakeLoadingTimeContent;
         private GUIContent exitLoadingKeyboardMouseActionContent;
         private GUIContent exitLoadingGamepadActionContent;
-
+        private GUIContent exitLoadingMouseActionContent;
 
 
         private void OnEnable()
@@ -30,9 +31,12 @@ namespace Kebab.SceneFlow.Settings.Editors
             fakeLoadingTimeContent = new GUIContent("Fake Loading Time", TOOLTIP_FAKE_LOADING_TIME);
             exitLoadingKeyboardMouseActionContent = new GUIContent("Exit Loading Keyboard Mouse Action", "The action to exit the loading screen using the keyboard or mouse.");
             exitLoadingGamepadActionContent = new GUIContent("Exit Loading Gamepad Action", "The action to exit the loading screen using the gamepad.");
+            exitLoadingMouseActionContent = new GUIContent("Exit Loading Mouse Action", "The action to exit the loading screen using the mouse.");
+
             loadingScreenPrefab = serializedObject.FindProperty(nameof(SceneFlowSettings.LoadingScreenPrefab));
             fakeLoadingTime = serializedObject.FindProperty(nameof(SceneFlowSettings.FakeLoadingTime));
             fakeLoadingPercent = serializedObject.FindProperty(nameof(SceneFlowSettings.FakeLoadingPercent));
+            exitLoadingMouseAction = serializedObject.FindProperty(nameof(SceneFlowSettings.ExitLoadingMouseAction));
 
             actionToExitLoadingScreen = serializedObject.FindProperty(nameof(SceneFlowSettings.ActionToExitLoadingScreen));
             exitLoadingKeyboardMouseAction = serializedObject.FindProperty(nameof(SceneFlowSettings.ExitLoadingKeyboardMouseAction));
@@ -72,14 +76,15 @@ namespace Kebab.SceneFlow.Settings.Editors
             {
                 SceneFlowSettings.EKeyboardMouseAction exitLoadingKeyboardMouseActionValue = (SceneFlowSettings.EKeyboardMouseAction)exitLoadingKeyboardMouseAction.enumValueFlag;
                 SceneFlowSettings.EGamepadAction exitLoadingGamepadActionValue = (SceneFlowSettings.EGamepadAction)exitLoadingGamepadAction.enumValueFlag;
+                SceneFlowSettings.EMouseAction exitLoadingMouseActionValue = (SceneFlowSettings.EMouseAction)exitLoadingMouseAction.enumValueFlag;
 
                 SceneFlowSettings.EKeyboardMouseAction newExitLoadingKeyboardMouseActionValue = (SceneFlowSettings.EKeyboardMouseAction)EditorGUILayout.EnumFlagsField(exitLoadingKeyboardMouseActionContent, exitLoadingKeyboardMouseActionValue);
                 SceneFlowSettings.EGamepadAction newExitLoadingGamepadActionValue = (SceneFlowSettings.EGamepadAction)EditorGUILayout.EnumFlagsField(exitLoadingGamepadActionContent, exitLoadingGamepadActionValue);
+                SceneFlowSettings.EMouseAction newExitLoadingMouseActionValue = (SceneFlowSettings.EMouseAction)EditorGUILayout.EnumFlagsField(exitLoadingMouseActionContent, exitLoadingMouseActionValue);
 
                 exitLoadingKeyboardMouseAction.enumValueFlag = (int)newExitLoadingKeyboardMouseActionValue;
                 exitLoadingGamepadAction.enumValueFlag = (int)newExitLoadingGamepadActionValue;
-
-
+                exitLoadingMouseAction.enumValueFlag = (int)newExitLoadingMouseActionValue;
             }
         }
 
