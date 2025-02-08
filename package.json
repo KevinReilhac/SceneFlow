@@ -1,6 +1,6 @@
 {
     "name": "com.kebab.scene_flow",
-    "version": "0.1.0",
+    "version": "1.0.7",
     "displayName": "SceneFlow",
     "description": "This is generic save file system",
     "unity": "2019.1",
