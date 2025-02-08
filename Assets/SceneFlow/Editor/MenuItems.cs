@@ -6,7 +6,7 @@ using Kebab.SceneFlow.Settings;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace Kebab.SceneFlow.Editor
+namespace Kebab.SceneFlow.Editors
 {
     internal static class CreateSettingsOnLoad
     {
@@ -30,7 +30,7 @@ namespace Kebab.SceneFlow.Editor
             return resourceRequest.asset != null;
         }
 
-        [MenuItem("Tools/SceneFlow/CreateSettingsAsset...", priority = 100)]
+        [MenuItem("SceneFlow/CreateSettingsAsset...", priority = 100)]
         private static async void CreateSettingsAsset()
         {
             if (await IsSettingsExist())
@@ -47,24 +47,27 @@ namespace Kebab.SceneFlow.Editor
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("Tools/SceneFlow/CreateSettingsAsset...", isValidateFunction: true)]
+        [MenuItem("SceneFlow/CreateSettingsAsset...", isValidateFunction: true)]
         private static bool CreateSettingsAssetValidate()
         {
             return Resources.Load<SceneFlowSettings>(FullFilePath) == null;
         }
 
-        [MenuItem("Tools/SceneFlow/OpenSettings", priority = 0)]
+
+        [MenuItem("SceneFlow/OpenSettings", priority = 0)]
         private static void OpenSettings()
+
         {
             string path = Path.Join("Assets\\Resources", FullFilePath + ".asset");
             Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(path);
             EditorUtility.FocusProjectWindow();
         }
 
-        [MenuItem("Tools/SceneFlow/OpenSettings", isValidateFunction: true)]
+        [MenuItem("SceneFlow/OpenSettings", isValidateFunction: true)]
         private static bool OpenSettingsValidation()
         {
             return Resources.Load<SceneFlowSettings>(FullFilePath) != null;
         }
+
     }
 }
