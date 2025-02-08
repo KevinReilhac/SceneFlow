@@ -11,6 +11,9 @@ using System.Runtime.CompilerServices;
 
 namespace Kebab.SceneFlow
 {
+    /// <summary>
+    /// Manager for the scene flow.
+    /// </summary>
     public static class SceneFlowManager
     {
         private const int FAKE_LOADING_DELTA = 50;
@@ -149,7 +152,6 @@ namespace Kebab.SceneFlow
         /// </summary>
         /// <param name="showLoadingScreen"> Display loading scene on True</param>
         public static void LoadNextScene(bool showLoadingScreen = true)
-
         {
             int currentBuildIndex = SceneManager.GetActiveScene().buildIndex;
 

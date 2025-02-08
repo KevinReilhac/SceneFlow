@@ -19,8 +19,9 @@ public class LoadingScreen : ALoadingScreen
         gameObject.SetActive(true);
     }
 
-    public override void UpdateProgress(float progress)
+    internal override void UpdateProgress(float progress)
     {
         fill.fillAmount = progress;
     }
+
 }

@@ -7,6 +7,9 @@ using UnityEngine.PlayerLoop;
 
 namespace Kebab.SceneFlow
 {
+    /// <summary>
+    /// Wait for the exit action to be pressed.
+    /// </summary>
     public class ExitActionAwaiter : MonoBehaviour
     {
         private Action _action;
