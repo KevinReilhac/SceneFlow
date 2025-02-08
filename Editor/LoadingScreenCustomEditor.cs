@@ -15,6 +15,8 @@ namespace Kebab.SceneFlow.LoadingScreen.Editors
         {
             base.OnInspectorGUI();
 
+            if (IsInPrefabEditor()) return;
+
             EditorGUILayout.Space(10);
             if (IsPrefab())
             {
@@ -24,6 +26,7 @@ namespace Kebab.SceneFlow.LoadingScreen.Editors
                     target = PrefabUtility.GetCorrespondingObjectFromSource(serializedObject.targetObject);
                 else
                     target = serializedObject.targetObject;
+
 
                 GUI.enabled = !IsSetAsLoadingScreen(target as ALoadingScreen);
                 if (GUILayout.Button("Set as Loading Screen"))
@@ -42,6 +45,13 @@ namespace Kebab.SceneFlow.LoadingScreen.Editors
             }
         }
 
+        private bool IsInPrefabEditor()
+        {
+            var prefabStage = UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage();
+            return prefabStage != null;
+        }
+
+
         private void OpenPrefab()
         {
             var target = serializedObject.targetObject;
@@ -59,7 +69,7 @@ namespace Kebab.SceneFlow.LoadingScreen.Editors
 
             var gameObject = targetComponent.gameObject;
             string name = gameObject.name;
-            
+
             if (!System.IO.Directory.Exists(PREFAB_SAVE_PATH))
             {
                 System.IO.Directory.CreateDirectory(PREFAB_SAVE_PATH);
