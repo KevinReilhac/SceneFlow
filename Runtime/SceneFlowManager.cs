@@ -169,5 +169,12 @@ namespace Kebab.SceneFlow
 
             Load(currentBuildIndex + 1, showLoadingScreen);
         }
+
+        private static bool CheckExitInput()
+        {
+            if (!Settings.ActionToExitLoadingScreen)
+                return false;
+            return false;
+        }
     }
 }
