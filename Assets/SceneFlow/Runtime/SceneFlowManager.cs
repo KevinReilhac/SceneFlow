@@ -14,7 +14,6 @@ namespace Kebab.SceneFlow
     public static class SceneFlowManager
     {
         private const int FAKE_LOADING_DELTA = 50;
-        private static SceneFlowSettings _settings;
         private static ALoadingScreen _loadingScreen;
         private static AsyncOperation loadAsyncOperation;
         private static ExitActionAwaiter exitActionAwaiter;
@@ -23,6 +22,7 @@ namespace Kebab.SceneFlow
         public static event Action OnLoadScene;
         public static event Action OnSceneLoaded;
 
+        private static SceneFlowSettings _settings;
         private static SceneFlowSettings Settings
         {
             get
@@ -68,7 +68,6 @@ namespace Kebab.SceneFlow
                 sceneName += ".unity";
 
             for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
-
             {
                 string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
                 if (scenePath.EndsWith(sceneName, StringComparison.InvariantCultureIgnoreCase))
@@ -115,9 +114,41 @@ namespace Kebab.SceneFlow
             {
                 await Load(SceneManager.LoadSceneAsync(buildIndex));
             }
-
         }
 
+        /// <summary>
+        /// if the loading is finished, exit the loading screen.
+        /// </summary>
+        public static void ExitLoadingScreen()
+        {
+            if (loadAsyncOperation.progress < 0.9f)
+            {
+                Debug.Log("Loading is not finished.");
+                return;
+            }
+
+            IsLoadingScene = false;
+            loadAsyncOperation.allowSceneActivation = true;
+            LoadingScreen.Hide();
+            OnSceneLoaded?.Invoke();
+        }
+
+        /// <summary>
+        /// Load the next scene in the build settings.
+        /// </summary>
+        /// <param name="showLoadingScreen"> Display loading scene on True</param>
+        public static void LoadNextScene(bool showLoadingScreen = true)
+        {
+            int currentBuildIndex = SceneManager.GetActiveScene().buildIndex;
+
+            if (currentBuildIndex >= SceneManager.sceneCountInBuildSettings)
+            {
+                Debug.LogError("You already is at the last scene.");
+                return;
+            }
+
+            Load(currentBuildIndex + 1, showLoadingScreen);
+        }
 
         private static async Task Load(AsyncOperation loadSceneOperation)
         {
@@ -147,20 +178,6 @@ namespace Kebab.SceneFlow
             ExitLoadingScreen();
         }
 
-        public static void ExitLoadingScreen()
-        {
-            if (loadAsyncOperation.progress < 0.9f)
-            {
-                Debug.Log("Loading is not finished.");
-                return;
-            }
-
-            IsLoadingScene = false;
-            loadAsyncOperation.allowSceneActivation = true;
-            LoadingScreen.Hide();
-            OnSceneLoaded?.Invoke();
-        }
-
         private static async Task ProcessFakeLoadingTime()
         {
             for (float t = 0; t < Settings.FakeLoadingTime * 1000; t++)
@@ -170,19 +187,6 @@ namespace Kebab.SceneFlow
                 float progress = MathHelpers.Remap(t / (Settings.FakeLoadingTime * 1000f), 0f, 1f, 1f - Settings.FakeLoadingPercent, 1f);
                 LoadingScreen.UpdateProgress(progress);
             }
-        }
-
-        public static void LoadNextScene(bool showLoadingScreen = true)
-        {
-            int currentBuildIndex = SceneManager.GetActiveScene().buildIndex;
-
-            if (currentBuildIndex >= SceneManager.sceneCountInBuildSettings)
-            {
-                Debug.LogError("You already is at the last scene.");
-                return;
-            }
-
-            Load(currentBuildIndex + 1, showLoadingScreen);
         }
 
         private static void CreateExitActionAwaiter(Action action)

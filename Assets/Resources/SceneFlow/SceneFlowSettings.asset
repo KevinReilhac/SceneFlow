@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51b0ae7e2044e534d9c8f1532034eab5, type: 3}
   m_Name: SceneFlowSettings
   m_EditorClassIdentifier: 
-  LoadingScreenPrefab: {fileID: 268483865984079313, guid: 3b24c09dcccc55f458972a81c8f6ab4d, type: 3}
-  FakeLoadingTime: 1
+  LoadingScreenPrefab: {fileID: 0}
+  FakeLoadingTime: 0
   FakeLoadingPercent: 0.2
   ActionToExitLoadingScreen: 1
-  ExitLoadingKeyboardAction: 2
-  ExitLoadingGamepadAction: 0
-  ExitLoadingMouseAction: 0
+  ExitLoadingKeyboardAction: -1
+  ExitLoadingGamepadAction: -1
+  ExitLoadingMouseAction: -1

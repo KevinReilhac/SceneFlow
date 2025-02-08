@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 
 namespace Kebab.SceneFlow.Settings
@@ -41,35 +42,55 @@ namespace Kebab.SceneFlow.Settings
         /// <summary>
         /// The prefab to use for the loading screen.
         /// </summary>
-        [Tooltip("The prefab to use for the loading screen.")]
         public ALoadingScreen LoadingScreenPrefab;
 
         /// <summary>
         /// The fake loading time in seconds.
         /// </summary>
-        [Tooltip("The fake loading time in seconds.")]
         [Min(0)] public float FakeLoadingTime = 0f;
 
         /// <summary>
         /// The percentage where the fake loading starts.
         /// </summary>
-        [Tooltip("The percentage where the fake loading starts.")]
         [Range(0f, 1f)] public float FakeLoadingPercent = 0.2f;
 
         /// <summary>
         /// If false, the new scene will be displayed immediately after the loading (fake or not) is finished.
         /// </summary>
-        [Tooltip("If false, the new scene will be displayed immediately after the loading (fake or not) is finished.")]
         public bool ActionToExitLoadingScreen = false;
 
-        [Tooltip("The action to exit the loading screen using the keyboard.")]
         public EKeyboardAction ExitLoadingKeyboardAction = (EKeyboardAction)(-1);
 
-        [Tooltip("The action to exit the loading screen using the gamepad.")]
         public EGamepadAction ExitLoadingGamepadAction = (EGamepadAction)(-1);
 
-        [Tooltip("The action to exit the loading screen using the mouse.")]
         public EMouseAction ExitLoadingMouseAction = (EMouseAction)(-1);
+
+#if UNITY_EDITOR
+        public static SceneFlowSettings GetOrCreate()
+        {
+            SceneFlowSettings settings = Resources.Load<SceneFlowSettings>($"{SETTINGS_DIRECTORY}/{SETTINGS_FILENAME}");
+
+            if (settings == null)
+                settings = CreateAsset();
+
+            return settings;
+        }
+
+        public static SceneFlowSettings CreateAsset()
+        {
+            SceneFlowSettings settings;
+            string directoryParentName = "Assets/Resources";
+            string directoryPath = Path.Join(directoryParentName, SETTINGS_DIRECTORY).Replace('\\', '/');
+            string filePath = Path.Join(directoryPath, SETTINGS_FILENAME + ".asset").Replace('\\', '/');
+            settings = CreateInstance<SceneFlowSettings>();
+            if (!UnityEditor.AssetDatabase.IsValidFolder(directoryPath))
+                UnityEditor.AssetDatabase.CreateFolder(directoryParentName, SETTINGS_DIRECTORY);
+
+            UnityEditor.AssetDatabase.CreateAsset(settings, filePath);
+            UnityEditor.AssetDatabase.Refresh();
+            return settings;
+        }
+#endif
     }
 }
 
