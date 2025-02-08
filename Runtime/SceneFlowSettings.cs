@@ -83,6 +83,8 @@ namespace Kebab.SceneFlow.Settings
             string directoryPath = Path.Join(directoryParentName, SETTINGS_DIRECTORY).Replace('\\', '/');
             string filePath = Path.Join(directoryPath, SETTINGS_FILENAME + ".asset").Replace('\\', '/');
             settings = CreateInstance<SceneFlowSettings>();
+            if (!UnityEditor.AssetDatabase.IsValidFolder(directoryParentName))
+                UnityEditor.AssetDatabase.CreateFolder("Assets", "Resources");
             if (!UnityEditor.AssetDatabase.IsValidFolder(directoryPath))
                 UnityEditor.AssetDatabase.CreateFolder(directoryParentName, SETTINGS_DIRECTORY);
 
