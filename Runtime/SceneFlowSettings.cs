@@ -71,7 +71,6 @@ namespace Kebab.SceneFlow.Settings
         /// </summary>
         /// <returns>The settings asset.</returns>
         public static SceneFlowSettings GetOrCreate()
-
         {
             SceneFlowSettings settings = Resources.Load<SceneFlowSettings>($"{SETTINGS_DIRECTORY}/{SETTINGS_FILENAME}");
 
@@ -95,6 +94,7 @@ namespace Kebab.SceneFlow.Settings
 
             UnityEditor.AssetDatabase.CreateAsset(settings, filePath);
             UnityEditor.AssetDatabase.Refresh();
+            Debug.Log($"Created ui settings asset at path: {filePath}");
             return settings;
         }
 #endif
