@@ -74,7 +74,7 @@ namespace Kebab.SceneFlow.Samples.FadeLoadingScreen
             float alpha = 0;
 
             events.onFadeInStart?.Invoke();
-            for (float t = 0; t < fadeInDuration; t += Time.deltaTime)
+            for (float t = 0; t < fadeInDuration; t += Time.unscaledDeltaTimes)
 
             {
                 normalizedTime = t / fadeInDuration;
@@ -92,7 +92,7 @@ namespace Kebab.SceneFlow.Samples.FadeLoadingScreen
             float alpha = 0;
 
             events.onFadeOutStart?.Invoke();
-            for (float t = 0; t < fadeOutDuration; t += Time.deltaTime)
+            for (float t = 0; t < fadeOutDuration; t += Time.unscaledDeltaTime)
 
             {
                 normalizedTime = t / fadeOutDuration;
