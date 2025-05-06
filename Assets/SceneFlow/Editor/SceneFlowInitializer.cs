@@ -8,7 +8,7 @@ namespace Kebab.SceneFlow.Settings.Editors
     {
         static SceneFlowInitializer()
         {
-            Initialize();
+            EditorApplication.delayCall += Initialize;
         }
 
 
