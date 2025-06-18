@@ -26,6 +26,7 @@ namespace Kebab.SceneFlow
         public static event Action OnSceneLoaded;
 
         private static SceneFlowSettings _settings;
+        private static int _loadingBuildIndex;
         public static SceneFlowSettings Settings
         {
             get
@@ -133,13 +134,17 @@ namespace Kebab.SceneFlow
 
             IsLoadingScene = false;
             loadAsyncOperation.allowSceneActivation = true;
+    
+
             LoadingScreen?.StartCoroutine(HideLoadingScreenOnNextFrame());
         }
 
 
         private static IEnumerator HideLoadingScreenOnNextFrame()
         {
-            yield return new WaitForEndOfFrame();
+            while (SceneManager.GetActiveScene().buildIndex != _loadingBuildIndex)
+                yield return new WaitForEndOfFrame();
+
             if (LoadingScreen != null && LoadingScreen.IsVisible)
                 LoadingScreen.Hide();
             OnSceneLoaded?.Invoke();
