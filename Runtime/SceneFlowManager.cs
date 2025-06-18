@@ -142,7 +142,7 @@ namespace Kebab.SceneFlow
 
         private static IEnumerator HideLoadingScreenOnNextFrame()
         {
-            while (SceneManager.GetActiveScene().buildIndex != _loadingBuildIndex)
+            while (loadAsyncOperation.progress < 1f)
                 yield return new WaitForEndOfFrame();
 
             if (LoadingScreen != null && LoadingScreen.IsVisible)
